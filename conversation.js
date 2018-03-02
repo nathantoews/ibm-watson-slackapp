@@ -1,13 +1,13 @@
 'use strict';
-const ConversationV1 = require('watson-developer-cloud/conversation/v1');
 
 // new instance of Conversation
-const conversation = new ConversationV1({
+const middleware = require('botkit-middleware-watson')({
   username: process.env.CONVERSATION_USERNAME,
   password: process.env.CONVERSATION_PASSWORD,
-  version_date: ConversationV1.VERSION_DATE_2017_02_03
+  workspace_id: process.env.WORKSPACE_ID,
+  url: process.env.CONVERSATION_URL || 'https://gateway.watsonplatform.net/conversation/api',
+  version_date: '2017-05-26'
 });
-
 /**
  * Call to Conversation API: send message
  * 
@@ -23,7 +23,7 @@ exports.sendMessage = (text, context) => {
     },
     context: context
   };
-  return new Promise((resolve, reject) => conversation.message(payload, function(err, data) {
+  return new Promise((resolve, reject) => watsonMiddleware.message(payload, function(err, data) {
     if (err) {
       reject(err);
     } else {
